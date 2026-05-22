@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>จัดการเติมเงิน - MPM SHOP</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+
+    <style>
+        /* PAYMENT SETTINGS */
+
+        .payments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pay-card {
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: .25s ease;
+        }
+
+        body:not(.dark-mode) .pay-card {
+            background: #fff;
+            border: 1px solid #ffe0ee;
+        }
+
+        body.dark-mode .pay-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .pay-card:hover {
+            transform: translateY(-4px);
+            border-color: #ff7cc8;
+        }
+
+        .pay-card-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .pay-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+        }
+
+        .pay-card-icon.pp   { background: linear-gradient(135deg, #ff4da6, #ff7cc8); }
+        .pay-card-icon.tw   { background: linear-gradient(135deg, #ff8200, #ffaa44); }
+        .pay-card-icon.card { background: linear-gradient(135deg, #4d70ff, #6e90ff); }
+        .pay-card-icon.bank { background: linear-gradient(135deg, #00c882, #00e6a0); }
+
+        .pay-card h3 {
+            font-size: 17px;
+            margin-bottom: 2px;
+        }
+
+        .pay-card .sub {
+            font-size: 12px;
+            color: #888;
+        }
+
+        body.dark-mode .pay-card .sub {
+            color: #aaa;
+        }
+
+        /* TOGGLE SWITCH */
+
+        .switch {
+            position: relative;
+            width: 46px;
+            height: 26px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .switch input { display: none; }
+
+        .switch label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #ddd;
+            border-radius: 999px;
+            cursor: pointer;
+            position: relative;
+            transition: .3s;
+        }
+
+        .switch label::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: .3s;
+            box-shadow: 0 2px 6px rgba(0,0,0,.2);
+        }
+
+        .switch input:checked + label {
+            background: linear-gradient(135deg, #ff4da6, #ff7cc8);
+        }
+
+        .switch input:checked + label::before {
+            left: 23px;
+        }
+
+        /* PAY INPUT */
+
+        .pay-input {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .pay-input label {
+            font-size: 13px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        body.dark-mode .pay-input label {
+            color: #ddd;
+        }
+
+        .pay-input input,
+        .pay-input textarea {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid #ffd1e7;
+            background: #fff7fb;
+            color: #2d2d2d;
+            outline: none;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            transition: .2s;
+            width: 100%;
+        }
+
+        .pay-input input:focus,
+        .pay-input textarea:focus {
+            border-color: #ff4fa0;
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, .12);
+        }
+
+        body.dark-mode .pay-input input,
+        body.dark-mode .pay-input textarea {
+            background: #101018;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .pay-save-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff4da6, #ff7cc8);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: .25s;
+        }
+
+        .pay-save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(255, 105, 180, .35);
+        }
+
+        .pay-card[data-disabled="true"] .pay-input,
+        .pay-card[data-disabled="true"] .pay-save-btn {
+            opacity: .35;
+            pointer-events: none;
+        }
+
+        .status-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-chip.on {
+            background: rgba(0, 200, 130, .15);
+            color: #00a86b;
+        }
+
+        .status-chip.off {
+            background: rgba(150, 150, 150, .15);
+            color: #888;
+        }
+
+        /* RECENT TOPUPS */
+
+        .topup-history {
+            border-radius: 24px;
+            padding: 25px;
+        }
+
+        body:not(.dark-mode) .topup-history {
+            background: #fff;
+            border: 1px solid #eee;
+        }
+
+        body.dark-mode .topup-history {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .method-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .method-pill.promptpay  { background: rgba(255, 105, 180, .15); color: #ff4fa0; }
+        .method-pill.truewallet { background: rgba(255, 130, 0, .15);   color: #ff8200; }
+        .method-pill.card       { background: rgba(100, 130, 255, .15); color: #4d70ff; }
+        .method-pill.banking    { background: rgba(0, 200, 130, .15);   color: #00a86b; }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            color: #ffc1dc;
+            margin-bottom: 12px;
+        }
+
+        /* QR PREVIEW */
+
+        .qr-preview {
+            width: 100%;
+            max-width: 180px;
+            border-radius: 12px;
+            margin: 10px auto 0;
+            border: 2px dashed #ffc1dc;
+            padding: 8px;
+            background: #fff;
+            display: block;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="theme-transition"></div>
+
+    <div class="dashboard">
+
+        <!-- SIDEBAR -->
+
+                        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="logo">
+                    <img src="../../images/logo.gif" alt="MPMSHOP">
+                    <span class="site-name">MPMSHOP</span>
+                </div>
+            </div>
+            <div class="menu">
+                <a href="index.html" class="menu-item">
+                    <i class="fa-solid fa-house"></i>
+                    <span>แดชบอร์ด</span>
+                </a>
+
+                <a href="transactions.html" class="menu-item">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>รายการเติม</span>
+                </a>
+
+                <a href="credit.html" class="menu-item">
+                    <i class="fa-solid fa-coins"></i>
+                    <span>เติมเครดิต</span>
+                </a>
+
+                <a href="users.html" class="menu-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>ลูกค้า</span>
+                </a>
+
+                <a href="products.html" class="menu-item">
+                    <i class="fa-solid fa-box"></i>
+                    <span>จัดการสินค้า</span>
+                </a>
+
+                <a href="categories.html" class="menu-item">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>หมวดหมู่</span>
+                </a>
+
+                <a href="news.html" class="menu-item">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>ข่าวสาร</span>
+                </a>
+
+                <a href="coupons.html" class="menu-item">
+                    <i class="fa-solid fa-percent"></i>
+                    <span>คูปองส่วนลด</span>
+                </a>
+
+                <a href="payments.html" class="menu-item active">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>การเงิน</span>
+                </a>
+
+                <a href="reports.html" class="menu-item">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>รายงาน</span>
+                </a>
+
+                <a href="settings.html" class="menu-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>ตั้งค่า</span>
+                </a>
+            </div>
+            <div class="sidebar-bottom sidebar-return">
+                <a href="../shop.html" class="menu-item">
+                    <i class="fa-solid fa-store"></i>
+                    <span>กลับหน้าร้านค้า</span>
+                </a>
+                <a href="../home.html" class="menu-item">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>กลับหน้าแรก</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+
+            <div class="topbar">
+
+                <div>
+                    <h1>จัดการเติมเงิน</h1>
+                    <p>กำหนดช่องทางและบัญชีรับเงินของร้าน 💰</p>
+                </div>
+
+                <div class="topbar-right">
+                    <button id="themeToggle" class="theme-toggle">🌙</button>
+                    <div class="profile">
+                        <img src="../../images/logo.gif">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PAYMENT METHOD CARDS -->
+
+            <div class="payments-grid">
+
+                <!-- PROMPTPAY -->
+
+                <div class="pay-card" data-method="promptpay">
+
+                    <div class="pay-card-head">
+                        <div class="pay-card-icon pp">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+                        <div>
+                            <h3>
+                                พร้อมเพย์
+                                <span class="status-chip on" data-status>เปิดใช้</span>
+                            </h3>
+                            <p class="sub">รับเงินผ่าน QR PromptPay</p>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="swPP" checked>
+                            <label for="swPP"></label>
+                        </div>
+                    </div>
+
+                    <div class="pay-input">
+                        <label>หมายเลขพร้อมเพย์ (เบอร์โทร / เลขบัตร ปชช.)</label>
+                        <input type="text" id="ppNumber" placeholder="094-XXX-XXXX">
+                    </div>
+
+                    <div class="pay-input">
+                        <label>ชื่อบัญชี</label>
+                        <input type="text" id="ppHolder" placeholder="MPM SHOP CO., LTD.">
+                    </div>
+
+                    <button class="pay-save-btn" data-save="promptpay">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        บันทึก
+                    </button>
+
+                </div>
+
+                <!-- TRUE WALLET -->
+
+                <div class="pay-card" data-method="truewallet">
+
+                    <div class="pay-card-head">
+                        <div class="pay-card-icon tw">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div>
+                            <h3>
+                                True Money Wallet
+                                <span class="status-chip on" data-status>เปิดใช้</span>
+                            </h3>
+                            <p class="sub">รับเงินผ่านซองอั่งเปา / เบอร์</p>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="swTW" checked>
+                            <label for="swTW"></label>
+                        </div>
+                    </div>
+
+                    <div class="pay-input">
+                        <label>เบอร์ TrueMoney Wallet</label>
+                        <input type="text" id="twPhone" placeholder="094-XXX-XXXX">
+                    </div>
+
+                    <div class="pay-input">
+                        <label>ชื่อผู้รับเงิน</label>
+                        <input type="text" id="twHolder" placeholder="MPM SHOP">
+                    </div>
+
+                    <button class="pay-save-btn" data-save="truewallet">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        บันทึก
+                    </button>
+
+                </div>
+
+                <!-- CREDIT / DEBIT -->
+
+                <div class="pay-card" data-method="card">
+
+                    <div class="pay-card-head">
+                        <div class="pay-card-icon card">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <h3>
+                                บัตรเครดิต / เดบิต
+                                <span class="status-chip on" data-status>เปิดใช้</span>
+                            </h3>
+                            <p class="sub">VISA · MasterCard · JCB</p>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="swCard" checked>
+                            <label for="swCard"></label>
+                        </div>
+                    </div>
+
+                    <div class="pay-input">
+                        <label>Merchant ID</label>
+                        <input type="text" id="cardMerchant" placeholder="MERCHANT_XXXX">
+                    </div>
+
+                    <div class="pay-input">
+                        <label>ค่าธรรมเนียม (%)</label>
+                        <input type="text" id="cardFee" placeholder="2.5">
+                    </div>
+
+                    <button class="pay-save-btn" data-save="card">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        บันทึก
+                    </button>
+
+                </div>
+
+                <!-- INTERNET BANKING -->
+
+                <div class="pay-card" data-method="banking">
+
+                    <div class="pay-card-head">
+                        <div class="pay-card-icon bank">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div>
+                            <h3>
+                                Internet Banking
+                                <span class="status-chip on" data-status>เปิดใช้</span>
+                            </h3>
+                            <p class="sub">SCB · KBank · BAY · KTB</p>
+                        </div>
+                        <div class="switch">
+                            <input type="checkbox" id="swBank" checked>
+                            <label for="swBank"></label>
+                        </div>
+                    </div>
+
+                    <div class="pay-input">
+                        <label>ธนาคารที่เปิดใช้งาน</label>
+                        <input type="text" id="bankList" placeholder="scb,kbk,bay,ktb">
+                    </div>
+
+                    <div class="pay-input">
+                        <label>ค่าธรรมเนียม (ยอด &lt; 1,000)</label>
+                        <input type="text" id="bankFee" placeholder="15">
+                    </div>
+
+                    <button class="pay-save-btn" data-save="banking">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        บันทึก
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- RECENT TOP-UP HISTORY -->
+
+            <div class="topup-history">
+
+                <div class="table-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                    <div>
+                        <h2>คำขอเติมเงินล่าสุด</h2>
+                        <p style="color:#888;font-size:13px;margin-top:4px">รายการที่ลูกค้ากดยืนยันชำระเงิน</p>
+                    </div>
+                    <button class="add-btn" id="refreshBtn">
+                        <i class="fa-solid fa-rotate"></i>
+                        รีเฟรช
+                    </button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัสรายการ</th>
+                            <th>วิธี</th>
+                            <th>จำนวน</th>
+                            <th>สถานะ</th>
+                            <th>เวลา</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topupBody">
+                    </tbody>
+                </table>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="../../js/theme.js"></script>
+    <script src="../../js/dashboard.js"></script>
+
+    <script>
+        /* PAYMENTS CONFIG */
+
+        const DEFAULT_CFG = {
+            promptpay:  { enabled: true,  number: '094-XXX-XXXX', holder: 'MPM SHOP CO., LTD.' },
+            truewallet: { enabled: true,  phone:  '094-XXX-XXXX', holder: 'MPM SHOP' },
+            card:       { enabled: true,  merchant: 'MERCHANT_0001', fee: '2.5' },
+            banking:    { enabled: true,  banks: 'scb,kbk,bay,ktb',  fee: '15' }
+        }
+
+        function loadCfg() {
+            try {
+                const s = JSON.parse(localStorage.getItem('mpm_payments_config'))
+                if (s) return { ...DEFAULT_CFG, ...s }
+            } catch (e) {}
+            return DEFAULT_CFG
+        }
+
+        function saveCfg(cfg) {
+            localStorage.setItem('mpm_payments_config', JSON.stringify(cfg))
+        }
+
+        const cfg = loadCfg()
+
+        /* HYDRATE UI */
+
+        const $ = (id) => document.getElementById(id)
+
+        $('swPP').checked    = cfg.promptpay.enabled
+        $('ppNumber').value  = cfg.promptpay.number
+        $('ppHolder').value  = cfg.promptpay.holder
+
+        $('swTW').checked    = cfg.truewallet.enabled
+        $('twPhone').value   = cfg.truewallet.phone
+        $('twHolder').value  = cfg.truewallet.holder
+
+        $('swCard').checked    = cfg.card.enabled
+        $('cardMerchant').value = cfg.card.merchant
+        $('cardFee').value     = cfg.card.fee
+
+        $('swBank').checked  = cfg.banking.enabled
+        $('bankList').value  = cfg.banking.banks
+        $('bankFee').value   = cfg.banking.fee
+
+        refreshStatusChips()
+
+        function refreshStatusChips() {
+            document.querySelectorAll('.pay-card').forEach(card => {
+                const method = card.dataset.method
+                const chip   = card.querySelector('[data-status]')
+                const sw     = card.querySelector('input[type="checkbox"]')
+                if (sw.checked) {
+                    chip.textContent = 'เปิดใช้'
+                    chip.className = 'status-chip on'
+                    card.removeAttribute('data-disabled')
+                } else {
+                    chip.textContent = 'ปิด'
+                    chip.className = 'status-chip off'
+                    card.setAttribute('data-disabled', 'true')
+                }
+            })
+        }
+
+        /* TOGGLE LISTENERS */
+
+        document.querySelectorAll('.pay-card input[type="checkbox"]').forEach(sw => {
+            sw.addEventListener('change', () => {
+                const method = sw.closest('.pay-card').dataset.method
+                cfg[method].enabled = sw.checked
+                saveCfg(cfg)
+                refreshStatusChips()
+                showToast(`${sw.checked ? 'เปิด' : 'ปิด'}ใช้งาน ${method} แล้ว`)
+            })
+        })
+
+        /* SAVE BUTTONS */
+
+        document.querySelectorAll('[data-save]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const method = btn.dataset.save
+
+                if (method === 'promptpay') {
+                    cfg.promptpay.number = $('ppNumber').value
+                    cfg.promptpay.holder = $('ppHolder').value
+                }
+                else if (method === 'truewallet') {
+                    cfg.truewallet.phone  = $('twPhone').value
+                    cfg.truewallet.holder = $('twHolder').value
+                }
+                else if (method === 'card') {
+                    cfg.card.merchant = $('cardMerchant').value
+                    cfg.card.fee      = $('cardFee').value
+                }
+                else if (method === 'banking') {
+                    cfg.banking.banks = $('bankList').value
+                    cfg.banking.fee   = $('bankFee').value
+                }
+
+                saveCfg(cfg)
+                showToast('บันทึกการตั้งค่าแล้ว ✨')
+            })
+        })
+
+        /* TOPUP HISTORY */
+
+        const methodMeta = {
+            promptpay:  { label: 'พร้อมเพย์',     icon: 'fa-qrcode' },
+            truewallet: { label: 'TrueWallet',    icon: 'fa-wallet' },
+            card:       { label: 'บัตรเครดิต',    icon: 'fa-credit-card' },
+            banking:    { label: 'Internet Bank', icon: 'fa-building-columns' }
+        }
+
+        function renderHistory() {
+            const body = $('topupBody')
+            const list = JSON.parse(localStorage.getItem('mpm_topup_history') || '[]')
+
+            if (!list.length) {
+                body.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-receipt"></i>
+                                <p>ยังไม่มีคำขอเติมเงิน</p>
+                            </div>
+                        </td>
+                    </tr>
+                `
+                return
+            }
+
+            body.innerHTML = list.map(item => {
+                const meta = methodMeta[item.method] || { label: item.method, icon: 'fa-coins' }
+                const time = new Date(item.time).toLocaleString('th-TH')
+                const statusHtml =
+                    item.status === 'approved' ? `<span class="success">อนุมัติ</span>` :
+                    item.status === 'rejected' ? `<span class="danger">ปฏิเสธ</span>` :
+                    `<span class="pending">รอตรวจสอบ</span>`
+
+                return `
+                    <tr>
+                        <td><b>${item.id}</b></td>
+                        <td>
+                            <span class="method-pill ${item.method}">
+                                <i class="fa-solid ${meta.icon}"></i>
+                                ${meta.label}
+                            </span>
+                        </td>
+                        <td><b>฿${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</b></td>
+                        <td>${statusHtml}</td>
+                        <td>${time}</td>
+                        <td>
+                            ${item.status === 'pending' ? `
+                                <button class="action-btn edit"   data-act="approve" data-id="${item.id}">✓ อนุมัติ</button>
+                                <button class="action-btn delete" data-act="reject"  data-id="${item.id}">✕ ปฏิเสธ</button>
+                            ` : `
+                                <button class="action-btn delete" data-act="delete" data-id="${item.id}">ลบ</button>
+                            `}
+                        </td>
+                    </tr>
+                `
+            }).join('')
+
+            body.querySelectorAll('[data-act]').forEach(b => {
+                b.addEventListener('click', () => {
+                    const list = JSON.parse(localStorage.getItem('mpm_topup_history') || '[]')
+                    const idx = list.findIndex(x => x.id === b.dataset.id)
+                    if (idx < 0) return
+
+                    if (b.dataset.act === 'approve') list[idx].status = 'approved'
+                    if (b.dataset.act === 'reject')  list[idx].status = 'rejected'
+                    if (b.dataset.act === 'delete')  list.splice(idx, 1)
+
+                    localStorage.setItem('mpm_topup_history', JSON.stringify(list))
+                    renderHistory()
+                    showToast('อัปเดตรายการแล้ว')
+                })
+            })
+        }
+
+        renderHistory()
+
+        $('refreshBtn').addEventListener('click', () => {
+            renderHistory()
+            showToast('รีเฟรชแล้ว')
+        })
+
+        /* SIMPLE TOAST */
+
+        function showToast(msg) {
+            let t = document.querySelector('.mini-toast-d')
+            if (!t) {
+                t = document.createElement('div')
+                t.className = 'mini-toast-d'
+                t.style.cssText = `
+                    position: fixed; bottom: 30px; left: 50%;
+                    transform: translateX(-50%) translateY(20px);
+                    background: linear-gradient(135deg, #ff4da6, #ff7cc8);
+                    color: #fff; padding: 12px 24px; border-radius: 999px;
+                    font-family: 'Prompt', sans-serif; font-size: 14px;
+                    opacity: 0; transition: .3s; z-index: 999999;
+                    box-shadow: 0 10px 30px rgba(255,105,180,.35);
+                    pointer-events: none;
+                `
+                document.body.appendChild(t)
+            }
+            t.textContent = msg
+            requestAnimationFrame(() => {
+                t.style.opacity = '1'
+                t.style.transform = 'translateX(-50%) translateY(0)'
+            })
+            clearTimeout(showToast._h)
+            showToast._h = setTimeout(() => {
+                t.style.opacity = '0'
+                t.style.transform = 'translateX(-50%) translateY(20px)'
+            }, 2200)
+        }
+    </script>
+
+</body>
+
+</html>

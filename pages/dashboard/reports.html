@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายงาน - MPM SHOP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+</head>
+
+<body>
+    <div class="theme-transition"></div>
+
+    <div class="dashboard">
+                <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="logo">
+                    <img src="../../images/logo.gif" alt="MPMSHOP">
+                    <span class="site-name">MPMSHOP</span>
+                </div>
+            </div>
+            <div class="menu">
+                <a href="index.html" class="menu-item">
+                    <i class="fa-solid fa-house"></i>
+                    <span>แดชบอร์ด</span>
+                </a>
+
+                <a href="transactions.html" class="menu-item">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>รายการเติม</span>
+                </a>
+
+                <a href="credit.html" class="menu-item">
+                    <i class="fa-solid fa-coins"></i>
+                    <span>เติมเครดิต</span>
+                </a>
+
+                <a href="users.html" class="menu-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>ลูกค้า</span>
+                </a>
+
+                <a href="products.html" class="menu-item">
+                    <i class="fa-solid fa-box"></i>
+                    <span>จัดการสินค้า</span>
+                </a>
+
+                <a href="categories.html" class="menu-item">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>หมวดหมู่</span>
+                </a>
+
+                <a href="news.html" class="menu-item">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>ข่าวสาร</span>
+                </a>
+
+                <a href="coupons.html" class="menu-item">
+                    <i class="fa-solid fa-percent"></i>
+                    <span>คูปองส่วนลด</span>
+                </a>
+
+                <a href="payments.html" class="menu-item">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>การเงิน</span>
+                </a>
+
+                <a href="reports.html" class="menu-item active">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>รายงาน</span>
+                </a>
+
+                <a href="settings.html" class="menu-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>ตั้งค่า</span>
+                </a>
+            </div>
+            <div class="sidebar-bottom sidebar-return">
+                <a href="../shop.html" class="menu-item">
+                    <i class="fa-solid fa-store"></i>
+                    <span>กลับหน้าร้านค้า</span>
+                </a>
+                <a href="../home.html" class="menu-item">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>กลับหน้าแรก</span>
+                </a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <div class="topbar">
+                <div>
+                    <h1>รายงาน</h1>
+                    <p>ดูภาพรวมยอดขาย ลูกค้า และผลการทำงานของร้าน</p>
+                </div>
+                <div class="topbar-right">
+                    <button id="themeToggle" class="theme-toggle">🌙</button>
+                    <div class="profile">
+                        <img src="../../images/logo.gif" alt="profile">
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-placeholder-hero">
+                <div class="dashboard-placeholder-icon blue">
+                    <i class="fa-solid fa-chart-column"></i>
+                </div>
+                <div>
+                    <h2>รายงาน</h2>
+                    <p>ดูภาพรวมยอดขาย ลูกค้า และผลการทำงานของร้าน</p>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                    <div class="stat-card dashboard-placeholder-card">
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h3>0</h3>
+                            <p>รายงานทั้งหมด</p>
+                        </div>
+                    </div>                    <div class="stat-card dashboard-placeholder-card">
+                        <div class="stat-icon green">
+                            <i class="fa-solid fa-money-bill-trend-up"></i>
+                        </div>
+                        <div>
+                            <h3>฿0</h3>
+                            <p>ยอดขายวันนี้</p>
+                        </div>
+                    </div>                    <div class="stat-card dashboard-placeholder-card">
+                        <div class="stat-icon pink">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <h3>0</h3>
+                            <p>ลูกค้าใหม่</p>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="table-card dashboard-empty-panel">
+                <i class="fa-solid fa-star"></i>
+                <h2>พร้อมต่อยอดระบบ</h2>
+                <p>หน้านี้ถูกเตรียมไว้ให้เชื่อมข้อมูลจริงหรือเพิ่มฟอร์มจัดการในขั้นถัดไป โดยยังคุมโทน cute premium ให้เข้ากับ dashboard เดิม</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../js/theme.js"></script>
+    <script src="../../js/dashboard.js"></script>
+</body>
+
+</html>
