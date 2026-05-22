@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ธุรกรรม - MPM SHOP</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../../css/dashboard.css">
+
+    <style>
+        /* TX PAGE */
+
+        .tx-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .tx-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .tx-tools-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .tx-filter {
+            height: 48px;
+            border-radius: 14px;
+            padding: 0 16px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            outline: none;
+            font-family: 'Prompt', sans-serif;
+            cursor: pointer;
+        }
+
+        body:not(.dark-mode) .tx-filter {
+            background: #fff;
+            color: #222;
+            border: 1px solid #eee;
+        }
+
+        .tx-export-btn {
+            border: none;
+            background: rgba(0, 200, 130, 0.12);
+            color: #00a86b;
+            padding: 12px 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tx-export-btn:hover {
+            background: #00c882;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* TYPE BADGE */
+
+        .tx-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tx-type.topup    { background: rgba(0, 200, 130, .15);  color: #00a86b; }
+        .tx-type.credit   { background: rgba(255, 105, 180, .15); color: #ff4fa0; }
+        .tx-type.purchase { background: rgba(100, 130, 255, .12); color: #4d70ff; }
+        .tx-type.refund   { background: rgba(255, 130, 0, .12);   color: #ff8200; }
+        .tx-type.withdraw { background: rgba(255, 80, 80, .12);   color: #ff5c5c; }
+
+        /* AMOUNT */
+
+        .amt-positive { color: #00a86b; font-weight: 700; }
+        .amt-negative { color: #ff5c5c; font-weight: 700; }
+
+        body.dark-mode .amt-positive { color: #00d084; }
+        body.dark-mode .amt-negative { color: #ff7676; }
+
+        /* METHOD PILL */
+
+        .method-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .method-pill.promptpay  { background: rgba(255, 105, 180, .15); color: #ff4fa0; }
+        .method-pill.truewallet { background: rgba(255, 130, 0, .15);   color: #ff8200; }
+        .method-pill.card       { background: rgba(100, 130, 255, .15); color: #4d70ff; }
+        .method-pill.banking    { background: rgba(0, 200, 130, .15);   color: #00a86b; }
+        .method-pill.balance    { background: rgba(170, 100, 255, .15); color: #aa64ff; }
+
+        /* STATUS — reuse .success / .pending / .danger from dashboard.css */
+
+        /* USER CELL */
+
+        .tx-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tx-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff4da6, #ff7cc8);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .tx-user-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .tx-user-id {
+            font-size: 11px;
+            color: #999;
+        }
+
+        body.dark-mode .tx-user-id {
+            color: #888;
+        }
+
+        /* EMPTY */
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 56px;
+            color: #ffc1dc;
+            margin-bottom: 12px;
+        }
+
+        /* TX DETAIL MODAL */
+
+        .tx-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            padding: 20px;
+        }
+
+        .tx-modal.active { display: flex; }
+
+        .tx-modal-box {
+            width: 480px;
+            max-width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            padding: 0;
+            overflow: hidden;
+            animation: popIn .3s cubic-bezier(.22,1,.36,1);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(.9); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+
+        body.dark-mode .tx-modal-box {
+            background: #171720;
+            color: #fff;
+        }
+
+        .tx-modal-head {
+            background: linear-gradient(135deg, #ff4da6, #ff7cc8);
+            color: #fff;
+            padding: 26px;
+            position: relative;
+            text-align: center;
+        }
+
+        .tx-modal-head h2 {
+            font-size: 22px;
+        }
+
+        .tx-modal-head .tx-amt {
+            font-size: 36px;
+            font-weight: 800;
+            margin-top: 8px;
+        }
+
+        .tx-modal-head .tx-id {
+            font-size: 13px;
+            opacity: .85;
+            margin-top: 4px;
+        }
+
+        .tx-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .2);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .tx-modal-close:hover {
+            transform: rotate(90deg);
+            background: rgba(255, 255, 255, .35);
+        }
+
+        .tx-modal-body {
+            padding: 24px;
+        }
+
+        .tx-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed rgba(255, 105, 180, .2);
+            font-size: 14px;
+        }
+
+        .tx-detail-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .tx-detail-row .label { color: #888; }
+        body.dark-mode .tx-detail-row .label { color: #aaa; }
+        .tx-detail-row .value { font-weight: 600; }
+
+        .tx-modal-actions {
+            display: flex;
+            gap: 10px;
+            padding: 0 24px 24px;
+        }
+
+        .tx-modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #00c882, #00e6a0);
+            color: #fff;
+        }
+
+        .btn-reject {
+            background: rgba(255, 80, 80, .15);
+            color: #ff5c5c;
+        }
+
+        .btn-reject:hover { background: #ff5c5c; color: #fff; }
+        .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,200,130,.35); }
+
+        /* TOAST */
+
+        .mini-toast-t {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: linear-gradient(135deg, #ff4da6, #ff7cc8);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 999px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            opacity: 0;
+            transition: .3s;
+            z-index: 999999;
+            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(255,105,180,.35);
+        }
+
+        .pagination .page-info {
+            color: #888;
+            font-size: 13px;
+            margin-right: auto;
+        }
+
+        body.dark-mode .pagination .page-info {
+            color: #aaa;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="theme-transition"></div>
+
+    <div class="dashboard">
+
+        <!-- SIDEBAR -->
+
+                        <aside class="sidebar">
+            <div class="sidebar-top">
+                <div class="logo">
+                    <img src="../../images/logo.gif" alt="MPMSHOP">
+                    <span class="site-name">MPMSHOP</span>
+                </div>
+            </div>
+            <div class="menu">
+                <a href="index.html" class="menu-item">
+                    <i class="fa-solid fa-house"></i>
+                    <span>แดชบอร์ด</span>
+                </a>
+
+                <a href="transactions.html" class="menu-item active">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>รายการเติม</span>
+                </a>
+
+                <a href="credit.html" class="menu-item">
+                    <i class="fa-solid fa-coins"></i>
+                    <span>เติมเครดิต</span>
+                </a>
+
+                <a href="users.html" class="menu-item">
+                    <i class="fa-solid fa-users"></i>
+                    <span>ลูกค้า</span>
+                </a>
+
+                <a href="products.html" class="menu-item">
+                    <i class="fa-solid fa-box"></i>
+                    <span>จัดการสินค้า</span>
+                </a>
+
+                <a href="categories.html" class="menu-item">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>หมวดหมู่</span>
+                </a>
+
+                <a href="news.html" class="menu-item">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>ข่าวสาร</span>
+                </a>
+
+                <a href="coupons.html" class="menu-item">
+                    <i class="fa-solid fa-percent"></i>
+                    <span>คูปองส่วนลด</span>
+                </a>
+
+                <a href="payments.html" class="menu-item">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>การเงิน</span>
+                </a>
+
+                <a href="reports.html" class="menu-item">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>รายงาน</span>
+                </a>
+
+                <a href="settings.html" class="menu-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>ตั้งค่า</span>
+                </a>
+            </div>
+            <div class="sidebar-bottom sidebar-return">
+                <a href="../shop.html" class="menu-item">
+                    <i class="fa-solid fa-store"></i>
+                    <span>กลับหน้าร้านค้า</span>
+                </a>
+                <a href="../home.html" class="menu-item">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>กลับหน้าแรก</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+
+        <main class="main-content">
+
+            <!-- TOPBAR -->
+
+            <div class="topbar">
+                <div>
+                    <h1>ธุรกรรมทั้งหมด</h1>
+                    <p>ติดตามการเติมเงิน ซื้อสินค้า และคืนเงิน 🧾</p>
+                </div>
+
+                <div class="topbar-right">
+                    <button id="themeToggle" class="theme-toggle">🌙</button>
+                    <div class="profile">
+                        <img src="../../images/logo.gif">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATS -->
+
+            <div class="tx-stats">
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                    </div>
+                    <div>
+                        <h3>฿<span id="stRevenue">0</span></h3>
+                        <p>รายรับวันนี้</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon pink">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <h3 id="stTopups">0</h3>
+                        <p>เติมเงินรอตรวจ</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                    <div>
+                        <h3 id="stPurchases">0</h3>
+                        <p>คำสั่งซื้อทั้งหมด</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <div>
+                        <h3 id="stFailed">0</h3>
+                        <p>รายการล้มเหลว</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TOOLS -->
+
+            <div class="tx-tools">
+                <div class="tx-tools-left">
+                    <div class="product-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="searchInput" type="text" placeholder="ค้นหา ID / ผู้ใช้ / รายละเอียด...">
+                    </div>
+
+                    <select id="typeFilter" class="tx-filter">
+                        <option value="all">ทุกประเภท</option>
+                        <option value="topup">เติมเงิน</option><option value="credit">เพิ่มเครดิต</option>
+                        <option value="purchase">ซื้อสินค้า</option>
+                        <option value="refund">คืนเงิน</option>
+                        <option value="withdraw">ถอนเงิน</option>
+                    </select>
+
+                    <select id="statusFilter" class="tx-filter">
+                        <option value="all">ทุกสถานะ</option>
+                        <option value="pending">รอตรวจสอบ</option>
+                        <option value="approved">สำเร็จ</option>
+                        <option value="rejected">ปฏิเสธ</option>
+                    </select>
+
+                    <select id="rangeFilter" class="tx-filter">
+                        <option value="all">ทุกช่วงเวลา</option>
+                        <option value="today">วันนี้</option>
+                        <option value="week">7 วันล่าสุด</option>
+                        <option value="month">30 วันล่าสุด</option>
+                    </select>
+                </div>
+
+                <button class="tx-export-btn" id="resetTxDemo" style="background:rgba(255,105,180,.12);color:#ff4fa0;margin-right:10px"><i class="fa-solid fa-rotate"></i> รีเซ็ตข้อมูลทดสอบ</button><button class="tx-export-btn" id="exportBtn">
+                    <i class="fa-solid fa-file-csv"></i>
+                    Export CSV
+                </button>
+            </div>
+
+            <!-- TABLE -->
+
+            <div class="table-card">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>รหัส</th>
+                            <th>ผู้ใช้</th>
+                            <th>ประเภท</th>
+                            <th>วิธี</th>
+                            <th>จำนวน</th>
+                            <th>สถานะ</th>
+                            <th>เวลา</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="txBody"></tbody>
+                </table>
+
+                <div class="pagination">
+                    <span class="page-info" id="pageInfo">0 รายการ</span>
+                    <button class="page-btn" id="prevPage">‹</button>
+                    <span class="page-btn active" id="currentPage">1</span>
+                    <button class="page-btn" id="nextPage">›</button>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- TX DETAIL MODAL -->
+
+    <div class="tx-modal" id="txModal">
+        <div class="tx-modal-box">
+
+            <div class="tx-modal-head">
+                <button class="tx-modal-close" id="txClose">✕</button>
+                <h2 id="mdType">รายละเอียดธุรกรรม</h2>
+                <div class="tx-amt" id="mdAmount">฿0.00</div>
+                <div class="tx-id" id="mdId">TX-000000</div>
+            </div>
+
+            <div class="tx-modal-body" id="mdBody"></div>
+
+            <div class="tx-modal-actions" id="mdActions"></div>
+
+        </div>
+    </div>
+
+    <script src="../../js/theme.js"></script>
+    <script src="../../js/site-config.js"></script>
+    <script src="../../js/dashboard.js"></script>
+
+    <script>
+        /* ==========================
+           TRANSACTIONS
+        ========================== */
+
+        const $ = (id) => document.getElementById(id)
+        const PAGE_SIZE = 12
+
+        let txs        = []
+        let filtered   = []
+        let currentPage = 1
+
+        const typeLabels = {
+            topup:    { label: 'เติมเงิน',  icon: 'fa-wallet',         sign: '+' },
+            credit:   { label: 'เพิ่มเครดิต', icon: 'fa-coins',          sign: '+' },
+            purchase: { label: 'ซื้อสินค้า', icon: 'fa-cart-shopping',  sign: '-' },
+            refund:   { label: 'คืนเงิน',   icon: 'fa-rotate-left',    sign: '+' },
+            withdraw: { label: 'ถอนเงิน',   icon: 'fa-money-bill-transfer', sign: '-' }
+        }
+
+        const methodLabels = {
+            promptpay:  'PromptPay',
+            truewallet: 'TrueWallet',
+            card:       'บัตรเครดิต',
+            banking:    'Banking',
+            'admin-credit': 'หลังบ้าน',
+            balance:    'กระเป๋าเงิน'
+        }
+
+        /* LOAD */
+
+        load()
+
+        function load() {
+            const stored = JSON.parse(localStorage.getItem('mpm_transactions') || 'null')
+            txs = stored || seedTransactions()
+
+            /* merge topup history from payments page */
+            const topups = JSON.parse(localStorage.getItem('mpm_topup_history') || '[]')
+            topups.forEach(t => {
+                if (txs.find(x => x.id === t.id)) return
+                txs.unshift({
+                    id:       t.id,
+                    type:     'topup',
+                    method:   t.method,
+                    user:     'Guest User',
+                    userId:   'U-' + Math.random().toString(36).slice(2, 7),
+                    amount:   t.amount,
+                    status:   t.status,
+                    time:     t.time,
+                    note:     'คำขอเติมเงินจากหน้าร้าน'
+                })
+            })
+
+            saveLocal()
+            applyFilters()
+            renderStats()
+        }
+
+        function seedTransactions() {
+            const users = [
+                { name: 'Chaos',     id: 'U-001' },
+                { name: 'MPM',       id: 'U-002' },
+                { name: 'AdminShop', id: 'U-003' },
+                { name: '4tunez',    id: 'U-004' },
+                { name: 'NotJob',    id: 'U-005' },
+                { name: 'EMotionXD', id: 'U-006' }
+            ]
+            const methods   = ['promptpay', 'truewallet', 'card', 'banking']
+            const types     = ['topup', 'purchase', 'topup', 'purchase', 'refund', 'topup']
+            const statuses  = ['approved', 'approved', 'approved', 'pending', 'rejected']
+            const products  = ['Nitro Boost 1 เดือน', 'Discord Boost', 'God of War', 'Spider-Man 2', 'Steam Wallet 300']
+
+            const list = []
+            const now  = Date.now()
+
+            for (let i = 0; i < 28; i++) {
+                const type = types[Math.floor(Math.random() * types.length)]
+                const u    = users[Math.floor(Math.random() * users.length)]
+                const m    = type === 'purchase' ? 'balance' : methods[Math.floor(Math.random() * methods.length)]
+                const amt  = type === 'purchase'
+                    ? +(20 + Math.random() * 800).toFixed(2)
+                    : +(50 + Math.random() * 2000).toFixed(2)
+
+                list.push({
+                    id:     'TX' + (now - i * 100000) + i,
+                    type,
+                    method: m,
+                    user:   u.name,
+                    userId: u.id,
+                    amount: amt,
+                    status: statuses[Math.floor(Math.random() * statuses.length)],
+                    time:   new Date(now - i * 3600000 * (1 + Math.random() * 4)).toISOString(),
+                    note:   type === 'purchase' ? products[i % products.length] : 'เติมเงินเข้ากระเป๋า'
+                })
+            }
+            return list
+        }
+
+        function saveLocal() {
+            localStorage.setItem('mpm_transactions', JSON.stringify(txs))
+        }
+
+        /* STATS */
+
+        function renderStats() {
+            const today = new Date().toDateString()
+
+            const revenueToday = txs
+                .filter(t => new Date(t.time).toDateString() === today && t.status === 'approved' && (t.type === 'topup' || t.type === 'credit' || t.type === 'purchase'))
+                .reduce((s, t) => s + Number(t.amount), 0)
+
+            const topupsPending = txs.filter(t => (t.type === 'topup' || t.type === 'credit') && t.status === 'pending').length
+            const purchases     = txs.filter(t => t.type === 'purchase').length
+            const failed        = txs.filter(t => t.status === 'rejected').length
+
+            $('stRevenue').textContent  = revenueToday.toLocaleString('en-US', { minimumFractionDigits: 2 })
+            $('stTopups').textContent   = topupsPending.toLocaleString()
+            $('stPurchases').textContent = purchases.toLocaleString()
+            $('stFailed').textContent    = failed.toLocaleString()
+        }
+
+        /* FILTERS */
+
+        $('searchInput').addEventListener('input', applyFilters)
+        $('typeFilter').addEventListener('change', applyFilters)
+        $('statusFilter').addEventListener('change', applyFilters)
+        $('rangeFilter').addEventListener('change', applyFilters)
+
+        function applyFilters() {
+            const q      = $('searchInput').value.trim().toLowerCase()
+            const type   = $('typeFilter').value
+            const status = $('statusFilter').value
+            const range  = $('rangeFilter').value
+
+            const now = Date.now()
+            const ranges = {
+                today: 86400000,
+                week:  7 * 86400000,
+                month: 30 * 86400000
+            }
+
+            filtered = txs.filter(t => {
+                if (q) {
+                    const hit =
+                        t.id.toLowerCase().includes(q) ||
+                        t.user.toLowerCase().includes(q) ||
+                        (t.note || '').toLowerCase().includes(q)
+                    if (!hit) return false
+                }
+                if (type   !== 'all' && t.type   !== type)   return false
+                if (status !== 'all' && t.status !== status) return false
+                if (range  !== 'all') {
+                    const dt = new Date(t.time).getTime()
+                    if (now - dt > ranges[range]) return false
+                }
+                return true
+            })
+
+            currentPage = 1
+            render()
+        }
+
+        /* RENDER */
+
+        function render() {
+            const body = $('txBody')
+
+            if (!filtered.length) {
+                body.innerHTML = `
+                    <tr><td colspan="8">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-receipt"></i>
+                            <h3 style="color:#aa3673;margin-bottom:4px">ไม่พบรายการ</h3>
+                            <p>ลองเปลี่ยนตัวกรอง หรือคำค้น</p>
+                        </div>
+                    </td></tr>
+                `
+                $('pageInfo').textContent = '0 รายการ'
+                $('currentPage').textContent = '1'
+                return
+            }
+
+            const start = (currentPage - 1) * PAGE_SIZE
+            const slice = filtered.slice(start, start + PAGE_SIZE)
+            const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+
+            body.innerHTML = slice.map(t => {
+                const meta    = typeLabels[t.type]
+                const initial = (t.user || '?').charAt(0).toUpperCase()
+                const sign    = meta.sign
+                const sCls    = sign === '+' ? 'amt-positive' : 'amt-negative'
+                const time    = new Date(t.time).toLocaleString('th-TH', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+
+                const statusHtml =
+                    t.status === 'approved' ? `<span class="success">สำเร็จ</span>` :
+                    t.status === 'rejected' ? `<span class="danger">ปฏิเสธ</span>` :
+                    `<span class="pending">รอตรวจ</span>`
+
+                return `
+                    <tr>
+                        <td><b style="font-size:13px">${t.id}</b></td>
+                        <td>
+                            <div class="tx-user">
+                                <div class="tx-user-avatar">${initial}</div>
+                                <div>
+                                    <div class="tx-user-name">${escapeHtml(t.user)}</div>
+                                    <div class="tx-user-id">${t.userId || '-'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="tx-type ${t.type}">
+                                <i class="fa-solid ${meta.icon}"></i>
+                                ${meta.label}
+                            </span>
+                        </td>
+                        <td><span class="method-pill ${t.method}">${methodLabels[t.method] || t.method}</span></td>
+                        <td><span class="${sCls}">${sign}฿${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></td>
+                        <td>${statusHtml}</td>
+                        <td style="font-size:12px;color:#888">${time}</td>
+                        <td>
+                            <button class="action-btn edit" data-act="view" data-id="${t.id}">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `
+            }).join('')
+
+            $('pageInfo').textContent    = `${filtered.length.toLocaleString()} รายการ · หน้า ${currentPage}/${totalPages}`
+            $('currentPage').textContent = currentPage
+
+            body.querySelectorAll('[data-act="view"]').forEach(b => {
+                b.addEventListener('click', () => openDetail(b.dataset.id))
+            })
+        }
+
+        /* PAGINATION */
+
+        $('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) { currentPage--; render() }
+        })
+
+        $('nextPage').addEventListener('click', () => {
+            const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+            if (currentPage < totalPages) { currentPage++; render() }
+        })
+
+        /* DETAIL MODAL */
+
+        function openDetail(id) {
+            const t = txs.find(x => x.id === id)
+            if (!t) return
+
+            const meta = typeLabels[t.type]
+            const sign = meta.sign
+
+            $('mdType').textContent   = meta.label
+            $('mdAmount').textContent = `${sign}฿${Number(t.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
+            $('mdId').textContent     = t.id
+
+            $('mdBody').innerHTML = `
+                <div class="tx-detail-row">
+                    <span class="label">ผู้ใช้</span>
+                    <span class="value">${escapeHtml(t.user)} <small style="color:#999">(${t.userId || '-'})</small></span>
+                </div>
+                <div class="tx-detail-row">
+                    <span class="label">ประเภท</span>
+                    <span class="value">
+                        <span class="tx-type ${t.type}">
+                            <i class="fa-solid ${meta.icon}"></i> ${meta.label}
+                        </span>
+                    </span>
+                </div>
+                <div class="tx-detail-row">
+                    <span class="label">วิธีการ</span>
+                    <span class="value">
+                        <span class="method-pill ${t.method}">${methodLabels[t.method] || t.method}</span>
+                    </span>
+                </div>
+                <div class="tx-detail-row">
+                    <span class="label">รายละเอียด</span>
+                    <span class="value" style="text-align:right;max-width:60%">${escapeHtml(t.note || '-')}</span>
+                </div>
+                <div class="tx-detail-row">
+                    <span class="label">สถานะ</span>
+                    <span class="value">
+                        ${t.status === 'approved' ? `<span class="success">สำเร็จ</span>` :
+                          t.status === 'rejected' ? `<span class="danger">ปฏิเสธ</span>` :
+                          `<span class="pending">รอตรวจสอบ</span>`}
+                    </span>
+                </div>
+                <div class="tx-detail-row">
+                    <span class="label">เวลา</span>
+                    <span class="value">${new Date(t.time).toLocaleString('th-TH')}</span>
+                </div>
+            `
+
+            $('mdActions').innerHTML = t.status === 'pending' ? `
+                <button class="btn-reject"  data-act="reject"  data-id="${t.id}">
+                    <i class="fa-solid fa-xmark"></i> ปฏิเสธ
+                </button>
+                <button class="btn-approve" data-act="approve" data-id="${t.id}">
+                    <i class="fa-solid fa-check"></i> อนุมัติ
+                </button>
+            ` : `
+                <button class="btn-reject" style="width:100%" data-act="delete" data-id="${t.id}">
+                    <i class="fa-solid fa-trash"></i> ลบรายการ
+                </button>
+            `
+
+            $('mdActions').querySelectorAll('[data-act]').forEach(b => {
+                b.addEventListener('click', () => actOn(b.dataset.id, b.dataset.act))
+            })
+
+            $('txModal').classList.add('active')
+        }
+
+        function actOn(id, act) {
+            const idx = txs.findIndex(x => x.id === id)
+            if (idx < 0) return
+
+            if (act === 'approve') {
+                txs[idx].status = 'approved'
+                toast('อนุมัติรายการแล้ว ✓')
+            }
+            if (act === 'reject') {
+                txs[idx].status = 'rejected'
+                toast('ปฏิเสธรายการแล้ว ✕')
+            }
+            if (act === 'delete') {
+                txs.splice(idx, 1)
+                toast('ลบรายการแล้ว 🗑️')
+            }
+
+            /* sync back to topup history if applicable */
+            const topups = JSON.parse(localStorage.getItem('mpm_topup_history') || '[]')
+            const tIdx = topups.findIndex(x => x.id === id)
+            if (tIdx >= 0) {
+                if (act === 'delete') topups.splice(tIdx, 1)
+                else                  topups[tIdx].status = txs.find(x => x.id === id)?.status || topups[tIdx].status
+                localStorage.setItem('mpm_topup_history', JSON.stringify(topups))
+            }
+
+            saveLocal()
+            $('txModal').classList.remove('active')
+            applyFilters()
+            renderStats()
+        }
+
+        $('txClose').addEventListener('click', () => $('txModal').classList.remove('active'))
+        $('txModal').addEventListener('click', (e) => {
+            if (e.target === $('txModal')) $('txModal').classList.remove('active')
+        })
+
+        /* EXPORT CSV */
+
+        $('exportBtn').addEventListener('click', () => {
+            const header = ['ID', 'ประเภท', 'ผู้ใช้', 'UserID', 'วิธี', 'จำนวน', 'สถานะ', 'เวลา', 'หมายเหตุ']
+            const rows = filtered.map(t => [
+                t.id,
+                typeLabels[t.type]?.label || t.type,
+                t.user,
+                t.userId || '',
+                methodLabels[t.method] || t.method,
+                t.amount,
+                t.status,
+                new Date(t.time).toLocaleString('th-TH'),
+                (t.note || '').replace(/,/g, ' ')
+            ])
+
+            const csv = [header, ...rows]
+                .map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))
+                .join('\n')
+
+            const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })
+            const url  = URL.createObjectURL(blob)
+            const a    = document.createElement('a')
+            a.href = url
+            a.download = `mpm-transactions-${Date.now()}.csv`
+            a.click()
+            URL.revokeObjectURL(url)
+            toast('ดาวน์โหลด CSV แล้ว 📥')
+        })
+
+        /* TOAST */
+
+        function toast(msg) {
+            let t = document.querySelector('.mini-toast-t')
+            if (!t) {
+                t = document.createElement('div')
+                t.className = 'mini-toast-t'
+                document.body.appendChild(t)
+            }
+            t.textContent = msg
+            requestAnimationFrame(() => {
+                t.style.opacity = '1'
+                t.style.transform = 'translateX(-50%) translateY(0)'
+            })
+            clearTimeout(toast._h)
+            toast._h = setTimeout(() => {
+                t.style.opacity = '0'
+                t.style.transform = 'translateX(-50%) translateY(20px)'
+            }, 2200)
+        }
+
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+            })[c])
+        }
+        $('resetTxDemo')?.addEventListener('click', () => {
+            const demoTx = {
+                id: 'CR' + Date.now(),
+                type: 'credit',
+                method: 'admin-credit',
+                user: 'NOT',
+                userId: 'U-DEMO',
+                userEmail: 'not@test.com',
+                amount: 500,
+                status: 'approved',
+                time: new Date().toISOString(),
+                note: 'รีเซ็ตทดสอบ: เพิ่มเครดิตให้ลูกค้า NOT'
+            }
+            txs = [demoTx]
+            localStorage.setItem('mpm_transactions', JSON.stringify(txs))
+            localStorage.setItem('mpm_credit_logs', JSON.stringify([{ email: 'not@test.com', amount: 500, note: demoTx.note, found: true, time: demoTx.time }]))
+            localStorage.setItem('mpm_mock_users', JSON.stringify([{ _id: 'U-DEMO', username: 'NOT', email: 'not@test.com', role: 'user', balance: 500, createdAt: new Date().toISOString() }]))
+            applyFilters()
+            renderStats()
+            toast('รีเซ็ตข้อมูลทดสอบแล้ว ✓')
+        })
+        /* ESC */
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') $('txModal').classList.remove('active')
+        })
+    </script>
+
+</body>
+
+</html>

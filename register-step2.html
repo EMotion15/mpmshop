@@ -1,0 +1,278 @@
+<html lang="th">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ICON -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <title>MPM SHOP</title>
+</head>
+
+<body>
+
+    <div class="theme-transition"></div>
+
+    <button id="globalThemeToggle" class="theme-toggle floating-toggle" type="button">☀️</button>
+
+    <div class="container">
+
+        <!-- LEFT -->
+        <div class="left">
+
+            <img src="../images/shop.png" class="shop-image">
+
+            <h2>MPM SHOP บัญชีของสมาชิก</h2>
+
+            <p>
+                สมาชิก MPM จะมีบัญชีตนเอง เพื่อเข้าใช้งานบริการต่าง ๆ ภายใต้<br>
+                บริษัท เอ็ม พี เอ็ม ช็อป (MPM SHOP Co., Ltd.)
+            </p>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+
+            <div class="login-box">
+
+                <h1>สมัครสมาชิก</h1>
+
+                <div class="subtitle-row">
+
+                    <p class="subtitle">
+                        ข้อมูลทั้งหมดที่คุณกรอกจะถูกเก็บเป็นความลับตาม นโยบายคุ้มครองข้อมูลส่วนบุคคล
+                    </p>
+
+                    <img src="../images/logo.gif" class="mini-logo">
+
+                </div>
+
+                <form id="registerStep2">
+
+                    <div class="input-group">
+                        <label>คุณเป็น <span>*</span></label>
+
+                        <div class="radio-group">
+                            <label><input type="radio" name="gender" required> ผู้หญิง</label>
+                            <label><input type="radio" name="gender"> ผู้ชาย</label>
+                            <label><input type="radio" name="gender"> อื่น ๆ</label>
+                            <label><input type="radio" name="gender"> ไม่ระบุ</label>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>วันเกิด <span>*</span></label>
+
+                        <div class="form-row">
+                            <select required>
+                                <option value="">วัน</option>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                                <option>11</option>
+                                <option>12</option>
+                                <option>13</option>
+                                <option>14</option>
+                                <option>15</option>
+                                <option>16</option>
+                                <option>17</option>
+                                <option>18</option>
+                                <option>19</option>
+                                <option>20</option>
+                                <option>21</option>
+                                <option>22</option>
+                                <option>23</option>
+                                <option>24</option>
+                                <option>25</option>
+                                <option>26</option>
+                                <option>27</option>
+                                <option>28</option>
+                                <option>29</option>
+                                <option>30</option>
+                                <option>31</option>
+                            </select>
+
+                            <select required>
+                                <option value="">เดือน</option>
+                                <option>มกราคม</option>
+                                <option>กุมภาพันธ์</option>
+                                <option>มีนาคม</option>
+                                <option>เมษายน</option>
+                                <option>พฤษภาคม</option>
+                                <option>มิถุนายน</option>
+                                <option>กรกฎาคม</option>
+                                <option>สิงหาคม</option>
+                                <option>กันยายน</option>
+                                <option>ตุลาคม</option>
+                                <option>พฤศจิกายน</option>
+                                <option>ธันวาคม</option>
+                            </select>
+
+                            <select required>
+                                <option value="">ปี</option>
+                                <option>2010</option>
+                                <option>2009</option>
+                                <option>2008</option>
+                                <option>2007</option>
+                                <option>2006</option>
+                                <option>2005</option>
+                                <option>2004</option>
+                                <option>2003</option>
+                                <option>2002</option>
+                                <option>2001</option>
+                                <option>2000</option>
+                                <option>1999</option>
+                                <option>1998</option>
+                                <option>1997</option>
+                                <option>1996</option>
+                                <option>1995</option>
+                                <option>1994</option>
+                                <option>1993</option>
+                                <option>1992</option>
+                                <option>1991</option>
+                                <option>1990</option>
+                                <option>1989</option>
+                                <option>1988</option>
+                                <option>1987</option>
+                                <option>1986</option>
+                                <option>1985</option>
+                                <option>1984</option>
+                                <option>1983</option>
+                                <option>1982</option>
+                                <option>1981</option>
+                                <option>1980</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>หมายเลขโทรศัพท์ <span>*</span></label>
+
+                        <div class="phone-input">
+                            <div class="phone-flag">
+                                <img src="../images/flag.png" class="flag-img">
+                            </div>
+
+                            <input type="tel" placeholder="กรอกเบอร์โทรศัพท์" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group checkbox-box">
+                        <label>
+                            <input type="checkbox" required>
+                            ยืนยันรับข่าวสารและโปรโมชันจาก MPM SHOP
+                        </label>
+                    </div>
+
+                    <div class="terms-text">
+                        คุณเข้าใจและยอมรับ
+                        <a href="#">ข้อตกลงการใช้งาน</a>
+                        แล้ว <span>*</span>
+                    </div>
+
+                    <div class="input-group checkbox-box">
+                        <label>
+                            <input type="checkbox" required>
+                            ฉันยอมรับข้อตกลงการสมัครสมาชิก
+                        </label>
+                    </div>
+
+                    <button type="submit" class="login-btn">
+                        บันทึกและสมัครสมาชิก
+                    </button>
+
+                </form>
+
+                <div class="login-footer">
+
+                    <div class="footer-row">
+
+                        <div class="footer-text">
+
+                            <p>
+                                เพียงบัญชีเดียว ก็เปิดเว็บได้
+                            </p>
+
+                            <small>
+                                สะดวก รวดเร็ว ปลอดภัย
+                            </small>
+
+                        </div>
+
+                        <img src="../images/logo.gif" class="footer-logo">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script>
+            const step2Form = document.getElementById('registerStep2')
+
+            step2Form.addEventListener('submit', async (e) => {
+                e.preventDefault()
+
+                const registerData = JSON.parse(sessionStorage.getItem('registerData'))
+
+                if (!registerData) {
+                    alert('กรุณากรอกข้อมูลหน้าแรกก่อน')
+                    window.location.href = 'register.html'
+                    return
+                }
+
+                const res = await fetch('http://localhost:5000/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(registerData)
+                })
+
+                const data = await res.json()
+
+                if (res.ok) {
+                    const toast = document.getElementById('toast')
+
+                    toast.innerText = 'สมัครสมาชิกสำเร็จ ✨'
+                    toast.classList.add('show')
+
+                    sessionStorage.removeItem('registerData')
+
+                    setTimeout(() => {
+                        window.location.href = 'login.html'
+                    }, 1500)
+                }
+            })
+        </script>
+
+        <div id="toast" class="toast-popup">
+            สมัครสมาชิกสำเร็จ
+        </div>
+
+    <script src="../js/theme.js"></script>
+
+</body>
+
+</html>
