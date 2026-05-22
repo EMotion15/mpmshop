@@ -6,426 +6,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard - MPM SHOP</title>
+    <title>MPM SHOP</title>
 
     <!-- FONT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- ICON -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <!-- CSS -->
-    <link rel="stylesheet" href="../../css/dashboard.css">
-
-    <!-- CHART.JS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 </head>
 
-<body>
+<body class="light-mode">
 
     <div class="theme-transition"></div>
 
-    <div class="dashboard">
+    <!-- NAVBAR -->
+    <nav class="navbar">
 
-        <!-- SIDEBAR -->
+        <div class="logo">
 
-                        <aside class="sidebar">
-            <div class="sidebar-top">
-                <div class="logo">
-                    <img src="../../images/logo.gif" alt="MPMSHOP">
-                    <span class="site-name">MPMSHOP</span>
+            <img src="../images/logo.gif" class="mini-logo">
+
+            <span class="site-name">MPMSHOP</span>
+
+        </div>
+
+        <div class="nav-menu">
+
+            <a href="#">หน้าแรก</a>
+            <a href="#">เติมเงิน</a>
+            <a href="#">สินค้า</a>
+
+        </div>
+
+        <div class="nav-buttons" id="guestActions">
+
+            <button id="themeToggle" class="theme-toggle">
+                🌙
+            </button>
+
+            <a href="login.html" class="login-btn">
+                เข้าสู่ระบบ
+            </a>
+
+            <a href="register.html" class="register-btn">
+                สมัครสมาชิก
+            </a>
+
+        </div>
+
+        <div class="user-menu" id="userMenu" style="display:none;">
+
+            <button id="themeToggleLogin" class="theme-toggle">
+                🌙
+            </button>
+
+            <div class="user-profile" id="userProfileBtn">
+                <img src="../images/logo.gif">
+                <span id="profileName">User</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+
+            <div class="profile-dropdown" id="profileDropdown">
+
+                <div class="dropdown-header">
+                    <img src="../images/logo.gif">
+                    <div>
+                        <h4 id="dropdownName">User</h4>
+                        <p id="dropdownRole">สมาชิกทั่วไป</p>
+                    </div>
                 </div>
-            </div>
-            <div class="menu">
-                <a href="index.html" class="menu-item active">
-                    <i class="fa-solid fa-house"></i>
-                    <span>แดชบอร์ด</span>
-                </a>
 
-                <a href="transactions.html" class="menu-item">
-                    <i class="fa-solid fa-receipt"></i>
-                    <span>รายการเติม</span>
-                </a>
+                <div class="balance-box">
+                    <span>ยอดเงินคงเหลือ</span>
+                    <b>฿&nbsp;&nbsp;<span id="dropdownBalance">0</span></b>
+                </div>
 
-                <a href="credit.html" class="menu-item">
-                    <i class="fa-solid fa-coins"></i>
-                    <span>เติมเครดิต</span>
-                </a>
-
-                <a href="users.html" class="menu-item">
-                    <i class="fa-solid fa-users"></i>
-                    <span>ลูกค้า</span>
-                </a>
-
-                <a href="products.html" class="menu-item">
-                    <i class="fa-solid fa-box"></i>
-                    <span>จัดการสินค้า</span>
-                </a>
-
-                <a href="categories.html" class="menu-item">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <span>หมวดหมู่</span>
-                </a>
-
-                <a href="news.html" class="menu-item">
-                    <i class="fa-solid fa-newspaper"></i>
-                    <span>ข่าวสาร</span>
-                </a>
-
-                <a href="coupons.html" class="menu-item">
-                    <i class="fa-solid fa-percent"></i>
-                    <span>คูปองส่วนลด</span>
-                </a>
-
-                <a href="payments.html" class="menu-item">
-                    <i class="fa-solid fa-wallet"></i>
-                    <span>การเงิน</span>
-                </a>
-
-                <a href="reports.html" class="menu-item">
-                    <i class="fa-solid fa-chart-column"></i>
-                    <span>รายงาน</span>
-                </a>
-
-                <a href="settings.html" class="menu-item">
-                    <i class="fa-solid fa-gear"></i>
-                    <span>ตั้งค่า</span>
-                </a>
-            </div>
-            <div class="sidebar-bottom sidebar-return">
-                <a href="../shop.html" class="menu-item">
+                <a href="shop.html">
                     <i class="fa-solid fa-store"></i>
-                    <span>กลับหน้าร้านค้า</span>
+                    เข้าร้านค้า
                 </a>
-                <a href="../home.html" class="menu-item">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <span>กลับหน้าแรก</span>
+
+                <a href="dashboard/index.html" id="adminLink" style="display:none;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    จัดการระบบหลังบ้าน
                 </a>
-            </div>
-        </aside>
 
-        <!-- MAIN -->
-
-        <main class="main-content">
-
-            <!-- TOPBAR -->
-
-            <div class="topbar">
-
-                <div>
-
-                    <h1>
-                        Dashboard
-                    </h1>
-
-                    <p>
-                        ยินดีต้อนรับกลับ ADMIN 👋
-                    </p>
-
-                </div>
-
-                <div class="topbar-right">
-
-                    <button id="themeToggle" class="theme-toggle">
-                        🌙
-                    </button>
-
-                    <div class="profile">
-
-                        <img src="../../images/logo.gif">
-
-                    </div>
-
-                </div>
+                <button id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    ออกจากระบบ
+                </button>
 
             </div>
 
-            <!-- STATS -->
+        </div>
 
-            <div class="stats-grid">
+    </nav>
 
-                <div class="stat-card">
+    <!-- HERO -->
+    <section class="hero">
 
-                    <div class="stat-icon pink">
+        <!-- LEFT -->
+        <div class="hero-left">
 
-                        <i class="fa-solid fa-users"></i>
+            <span class="hero-badge">
+                🚀 ระบบร้านค้าออนไลน์แบบใหม่
+            </span>
 
-                    </div>
+            <h1>
 
-                    <div>
+                ร้าน MPM SHOP
+                <span>ง่ายกว่าเดิม</span>
 
-                        <h3 id="statMembers">1,245</h3>
+            </h1>
 
-                        <p>
-                            สมาชิกทั้งหมด
-                        </p>
+            <p>
 
-                    </div>
+                ร้านค้าออนไลน์ของเรา
+                พร้อมระบบเติมเงินที่ปลอดภัย
+                ภายในไม่กี่นาที
 
-                </div>
+            </p>
 
-                <div class="stat-card live-card">
+            <div class="hero-buttons">
 
-                    <div class="stat-icon purple">
+                <a href="register.html" class="start-btn">
+                    สมัครสมาชิก
+                </a>
 
-                        <i class="fa-solid fa-circle-dot"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            <span id="onlineCount">0</span>
-                            <span class="live-dot"></span>
-                        </h3>
-
-                        <p>
-                            ผู้ใช้ออนไลน์ตอนนี้
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-icon cyan">
-
-                        <i class="fa-solid fa-eye"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3 id="statViews">0</h3>
-
-                        <p>
-                            ผู้เข้าชมวันนี้
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-icon blue">
-
-                        <i class="fa-solid fa-cart-shopping"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3>542</h3>
-
-                        <p>
-                            ออเดอร์วันนี้
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-icon green">
-
-                        <i class="fa-solid fa-money-bill"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3>฿24,500</h3>
-
-                        <p>
-                            รายได้รวม
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <div class="stat-card">
-
-                    <div class="stat-icon orange">
-
-                        <i class="fa-solid fa-box"></i>
-
-                    </div>
-
-                    <div>
-
-                        <h3>82</h3>
-
-                        <p>
-                            สินค้าทั้งหมด
-                        </p>
-
-                    </div>
-
-                </div>
+                <a href="shop.html" class="demo-btn">
+                    เยี่ยมชมร้านค้า
+                </a>
 
             </div>
 
-            <!-- CHARTS -->
+        </div>
 
-            <div class="charts-grid">
+        <!-- RIGHT -->
+        <div class="hero-right">
 
-                <div class="chart-card large">
+            <img src="../images/shop.png" class="shop-image site-banner">
 
-                    <div class="chart-header">
+        </div>
 
-                        <div>
-                            <h2>
-                                รายได้ / ขาดทุน
-                            </h2>
-                            <p class="chart-sub">
-                                ภาพรวมการเงิน 7 วันล่าสุด
-                            </p>
-                        </div>
+    </section>
 
-                        <div class="chart-legend">
-                            <span class="legend-dot revenue"></span>
-                            <span>รายได้</span>
-                            <span class="legend-dot loss"></span>
-                            <span>ขาดทุน</span>
-                        </div>
-
-                    </div>
-
-                    <div class="chart-wrap">
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-
-                </div>
-
-                <div class="chart-card">
-
-                    <div class="chart-header">
-
-                        <div>
-                            <h2>
-                                ผู้ชมเว็บไซต์
-                            </h2>
-                            <p class="chart-sub">
-                                จำนวนการเข้าชมรายวัน
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <div class="chart-wrap">
-                        <canvas id="visitorChart"></canvas>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <!-- TRANSACTION TABLE -->
-
-            <div class="table-card">
-
-                <div class="table-header">
-
-                    <h2>
-                        ประวัติธุรกรรมล่าสุด
-                    </h2>
-
-                </div>
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>ผู้ใช้</th>
-                            <th>จำนวนเงิน</th>
-                            <th>สถานะ</th>
-                            <th>เวลา</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-
-                            <td>Chaos</td>
-
-                            <td>฿300</td>
-
-                            <td>
-
-                                <span class="success">
-                                    สำเร็จ
-                                </span>
-
-                            </td>
-
-                            <td>
-                                2 นาทีที่แล้ว
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>MPM</td>
-
-                            <td>฿150</td>
-
-                            <td>
-
-                                <span class="pending">
-                                    รอดำเนินการ
-                                </span>
-
-                            </td>
-
-                            <td>
-                                10 นาทีที่แล้ว
-                            </td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>AdminShop</td>
-
-                            <td>฿499</td>
-
-                            <td>
-
-                                <span class="success">
-                                    สำเร็จ
-                                </span>
-
-                            </td>
-
-                            <td>
-                                25 นาทีที่แล้ว
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </main>
-
-    </div>
-
-    <script src="../../js/theme.js"></script>
-    <script src="../../js/dashboard.js"></script>
+    <script src="../js/theme.js"></script>
+    <script src="../js/site-config.js"></script>
+    <script src="../js/home.js"></script>
 
 </body>
 
